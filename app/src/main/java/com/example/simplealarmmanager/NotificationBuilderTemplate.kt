@@ -62,8 +62,8 @@ object NotificationBuilderTemplate {
 
         val notification: Notification = notificationBuilder!!.build()
 
-        //context.startForeground(NotificationId, notification)
-        notificationManager.notify(NotificationId, notification)
+        context.startForeground(NotificationId, notification)
+        //notificationManager.notify(NotificationId, notification)
     }
 
     private fun stopServiceForegroundNotification(context: Context) : PendingIntent {
