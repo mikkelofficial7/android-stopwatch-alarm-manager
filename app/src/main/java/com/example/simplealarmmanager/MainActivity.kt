@@ -4,6 +4,7 @@ import android.app.ActivityManager
 import android.content.*
 import android.os.*
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -23,6 +24,9 @@ class MainActivity : AppCompatActivity() {
         const val TAG_ACTION_STOP_LISTEN = "action_stop_listen"
     }
 
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    var toast: Toast? = null
+
     private var timerText = ""
     private var alarm = AlarmReceiver()
     private var mService: MyService? = null
@@ -36,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
             registerLocalBroadcastReceiver()
 
-            Toast.makeText(this@MainActivity, "Service Started", Toast.LENGTH_SHORT).show()
+            showToast("Service Started")
 
             checkButtonServiceEnable()
         }
@@ -47,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
             unRegisterLocalBroadcastReceiver()
 
-            Toast.makeText(this@MainActivity, "Service Stopped", Toast.LENGTH_SHORT).show()
+            showToast("Service Stopped")
 
             checkButtonServiceEnable()
         }
@@ -157,5 +161,10 @@ class MainActivity : AppCompatActivity() {
             if (serviceClass.name == service.service.className) return true
         }
         return false
+    }
+
+    fun showToast(text: String) {
+        toast = Toast.makeText(this, text, Toast.LENGTH_LONG)
+        toast?.show()
     }
 }

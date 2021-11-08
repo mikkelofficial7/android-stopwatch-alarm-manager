@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import android.widget.Toast
+import com.example.simplealarmmanager.MainActivity
 
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -17,13 +18,13 @@ class AlarmReceiver : BroadcastReceiver() {
         wl.acquire()
 
         // Put here YOUR code.
-        Toast.makeText(context, "Alarm at ", Toast.LENGTH_LONG).show() // For example
+        (context as MainActivity).showToast("Alarm Ringing!!")
 
         wl.release()
     }
 
     fun setAlarm(context: Context) {
-        Toast.makeText(context, "Alarm Started", Toast.LENGTH_SHORT).show()
+        (context as MainActivity).showToast("Alarm Started")
 
         val am = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -39,7 +40,7 @@ class AlarmReceiver : BroadcastReceiver() {
     }
 
     fun cancelAlarm(context: Context) {
-        Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_SHORT).show()
+        (context as MainActivity).showToast("Alarm Cancelled")
 
         val intent = Intent(context, AlarmReceiver::class.java)
         val sender = PendingIntent.getBroadcast(context, 0, intent, 0)
