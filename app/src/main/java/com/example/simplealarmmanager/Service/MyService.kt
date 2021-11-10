@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.*
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.simplealarmmanager.MainActivity.Companion.ACTION_TIMER_DATA
+import com.example.simplealarmmanager.MainActivity.Companion.TAG_ACTION_AUTO_STOP_SERVICE
 import com.example.simplealarmmanager.MainActivity.Companion.TAG_CAN_SHOW_TIMER_DATA_FOREEGROUND
 import com.example.simplealarmmanager.MainActivity.Companion.TAG_TIMER_DATA
 import com.example.simplealarmmanager.NotificationBuilderTemplate
@@ -43,8 +44,12 @@ class MyService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
+        val isAutoStopService = intent?.getBooleanExtra(TAG_ACTION_AUTO_STOP_SERVICE, false) == true
         canShowForeground = intent?.getBooleanExtra(TAG_CAN_SHOW_TIMER_DATA_FOREEGROUND, false) == true
+
         handler.post(runnable)
+
+        if(isAutoStopService) stopSelf()
 
         return START_STICKY
     }

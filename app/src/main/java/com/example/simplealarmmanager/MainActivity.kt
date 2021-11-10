@@ -18,10 +18,12 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "Sample_Channel"
-        const val TAG_TIMER_DATA = "timer_data"
         const val ACTION_TIMER_DATA = "action_timer_data"
+
+        const val TAG_TIMER_DATA = "timer_data"
         const val TAG_CAN_SHOW_TIMER_DATA_FOREEGROUND = "can_show_timer_data_notif"
         const val TAG_ACTION_STOP_LISTEN = "action_stop_listen"
+        const val TAG_ACTION_AUTO_STOP_SERVICE = "auto_stop_service"
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -76,10 +78,12 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        when(intent.action) {
-            TAG_ACTION_STOP_LISTEN -> stopService()
-            else -> if(isMyServiceRunning(MyService::class.java)) startService()
+        val needStopServiceAutomatic: Boolean = when(intent.action) {
+            TAG_ACTION_STOP_LISTEN -> true
+            else -> !isMyServiceRunning(MyService::class.java)
         }
+
+        startService(needStopServiceAutomatic)
     }
 
     override fun onStop() {
@@ -109,14 +113,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startService() {
-        Intent(this, MyService::class.java).also { intent ->
-            startService(intent)
-            bindService(intent, connection, Context.BIND_NOT_FOREGROUND)
+    private fun startService(needStopServiceAutomatic: Boolean = false) {
+        val intent = Intent(this, MyService::class.java)
+        intent.putExtra(TAG_ACTION_AUTO_STOP_SERVICE, needStopServiceAutomatic)
 
-            // this will run automatically and cannot be destroyed
-            // bindService(intent, connection, Context.BIND_AUTO_CREATE)
-        }
+        startService(intent)
+        bindService(intent, connection, Context.BIND_NOT_FOREGROUND)
+
+        // this will run automatically and cannot be destroyed
+        // bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     private fun stopService() {
