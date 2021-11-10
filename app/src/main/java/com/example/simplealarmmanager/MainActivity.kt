@@ -75,6 +75,13 @@ class MainActivity : AppCompatActivity() {
         setupClick()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if(mService == null) return
+        mService!!.stopForegroundService(removeNotification = true)
+    }
+
     override fun onStart() {
         super.onStart()
 

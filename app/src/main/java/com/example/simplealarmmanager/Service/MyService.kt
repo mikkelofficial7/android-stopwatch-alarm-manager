@@ -67,7 +67,7 @@ class MyService : Service() {
     override fun onRebind(intent: Intent?) {
         super.onRebind(intent)
 
-        stopForeground(true)
+        stopForegroundService(removeNotification = true)
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -95,6 +95,13 @@ class MyService : Service() {
         intent.putExtra(TAG_TIMER_DATA, timerData)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
+
+    fun stopForegroundService(removeNotification: Boolean = false) {
+        stopForeground(removeNotification)
+    }
+
+
+
 
     inner class LocalBinder : Binder() {
         fun getService(): MyService = this@MyService
